@@ -1,7 +1,7 @@
 import os
 import redis
 
-REDIS_URL = "redis://:Test123@localhost:6379/0"
+REDIS_URL = os.getenv("REDIS_URL", "redis://:Test123@localhost:6379/0")
 REDIS_CACHE_EXPIRE = 3600  # 1 hour
 
 try:
