@@ -22,16 +22,15 @@ async def is_database_initialized(engine) -> bool:
         return False
 
 async def execute_sql_file(engine, file_path: Path):
-    """Execute SQL commands from a file"""
+    """Execute SQL commands from a file in a single transaction"""
     try:
-        async with engine.connect() as conn:
+        async with engine.begin() as conn:  # Use a transaction
             sql_content = file_path.read_text()
             # Split into individual statements and execute
             for statement in sql_content.split(';'):
                 statement = statement.strip()
                 if statement:  # Skip empty statements
                     await conn.execute(text(statement))
-                    await conn.commit()
             logger.info("SQL file executed successfully")
     except Exception as e:
         logger.error(f"Error executing SQL file: {e}")
