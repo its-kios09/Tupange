@@ -1,4 +1,3 @@
-# app/init_db.py
 import asyncio
 from pathlib import Path
 from sqlalchemy import text
