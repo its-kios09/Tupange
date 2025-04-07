@@ -1,2 +1,4 @@
 .qodo
 env/
+.idea/
+**/__pycache__/
