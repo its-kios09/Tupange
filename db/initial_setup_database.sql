@@ -5,10 +5,7 @@ CREATE TABLE IF NOT EXISTS db_initialization (
     version VARCHAR(50) NOT NULL,
     initialized_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
--- Create database
-CREATE DATABASE IF NOT EXISTS healthcare_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE healthcare_db;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
