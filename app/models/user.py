@@ -1,7 +1,11 @@
+# models/user.py
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from app.database import Base
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+from .base import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -14,5 +18,11 @@ class User(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
     
-    patient = relationship("Patient", back_populates="user", uselist=False)
-    doctor = relationship("Doctor", back_populates="user", uselist=False)
+    # Relationships
+    patient = relationship("Patient", back_populates="user", uselist=False, foreign_keys="Patient.user_id")
+    doctor = relationship("Doctor", back_populates="user", uselist=False, foreign_keys="Doctor.user_id")
+    
+    @classmethod
+    async def get_by_email(cls, db: AsyncSession, email: str):
+        result = await db.execute(select(cls).where(cls.email == email))
+        return result.scalars().first()

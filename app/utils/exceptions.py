@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    details="Could not validate credentials",
+    detail="Could not validate credentials",
     headers={"WWW-Authenticate": "Bearer"},
 )
 
