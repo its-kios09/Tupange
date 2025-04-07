@@ -1,9 +1,14 @@
 import os
 import redis
+from dotenv import load_dotenv
 
-REDIS_URL = os.getenv("REDIS_URL", "redis://:Test123@localhost:6379/0")
-REDIS_CACHE_EXPIRE = 3600  # 1 hour
+load_dotenv("./.env")
 
+
+
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+REDIS_CACHE_EXPIRE = os.getenv("REDIS_CACHE_EXPIRE", 3600)
 try:
     r = redis.Redis.from_url(REDIS_URL)
     
