@@ -23,7 +23,7 @@ async def check_db_connection():
     """Test the database connection"""
     try:
         async with engine.begin() as conn:
-            await conn.execute("SELECT 1")
+            await conn.execute(text("SELECT 1"))  
         logger.info("✅ Database connection successful")
         return True
     except SQLAlchemyError as e:

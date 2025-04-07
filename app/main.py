@@ -4,6 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import engine, check_db_connection
 from app.init_db import init_db
+from app.utils.exceptions import (
+    http_exception_handler,
+    validation_exception_handler,
+    custom_exception_handler,
+)
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -24,6 +29,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, custom_exception_handler)
 
 @app.on_event("startup")
 async def startup_event():
