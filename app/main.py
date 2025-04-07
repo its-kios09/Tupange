@@ -30,7 +30,7 @@ async def root():
         "description": "API for managing healthcare appointments, patients, doctors and medical records",
         "documentation": {
             "openapi": "/api/v1/openapi.json",
-            "redoc": "/docs",
+            "redoc": "/redoc",
             "swagger": "/docs",
         },
     }
