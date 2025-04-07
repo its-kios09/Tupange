@@ -7,9 +7,8 @@ load_dotenv("./.env")
 
 
 
-REDIS_URL = os.getenv("REDIS_URL")
-REDIS_CACHE_EXPIRE = os.getenv("REDIS_CACHE_EXPIRE")
-
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+REDIS_CACHE_EXPIRE = os.getenv("REDIS_CACHE_EXPIRE", 3600)
 try:
     r = redis.Redis.from_url(REDIS_URL)
     
