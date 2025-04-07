@@ -1,15 +1,18 @@
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
+from app.config import settings
+from app.database import engine, check_db_connection
+from app.init_db import init_db
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+logging.basicConfig(
+    level=logging.INFO, 
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
 app = FastAPI(
-    title = "Tupange HealthCare Appointment Scheduling API",
-    description = "API for managing healthcare appointments, patients, doctors and medical records",
+    title="Tupange HealthCare Appointment Scheduling API",
+    description="API for managing healthcare appointments, patients, doctors and medical records",
     version="1.0.0",
     openapi_url="/api/v1/openapi.json",
 )
@@ -22,6 +25,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    logging.info("Starting up the Tupange HealthCare Appointment Scheduling API...")
+    
+    # Check database connection first
+    if not await check_db_connection():
+        raise RuntimeError("Failed to connect to database on startup")
+    
+    # Initialize database with tables and superuser
+    try:
+        await init_db()
+        logging.info("Database initialization completed successfully")
+    except Exception as e:
+        logging.error(f"Database initialization failed: {e}")
+        raise
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await engine.dispose()
+    logging.info("Shutting down the Tupange HealthCare Appointment Scheduling API...")
+
+@app.get("/health")
+async def health_check():
+    """Endpoint to check database and application health"""
+    db_healthy = await check_db_connection()
+    if not db_healthy:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    
+    return {
+        "status": "healthy",
+        "database": "connected",
+        "version": "1.0.0"
+    }
+
 @app.get("/")
 async def root():
     return {
@@ -33,4 +70,5 @@ async def root():
             "redoc": "/redoc",
             "swagger": "/docs",
         },
+        "health_check": "/health"
     }
