@@ -1,3 +1,10 @@
+
+
+CREATE TABLE IF NOT EXISTS db_initialization (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    version VARCHAR(50) NOT NULL,
+    initialized_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 -- Create database
 CREATE DATABASE IF NOT EXISTS healthcare_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -94,3 +101,5 @@ CREATE INDEX idx_appointments_doctor ON appointments(doctor_id);
 CREATE INDEX idx_appointments_patient ON appointments(patient_id);
 CREATE INDEX idx_appointments_time ON appointments(scheduled_time, end_time);
 CREATE INDEX idx_doctor_availability ON doctor_availability(doctor_id, day_of_week);
+
+INSERT INTO db_initialization (version) VALUES ('1.0.0');
