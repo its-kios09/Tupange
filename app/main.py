@@ -40,14 +40,14 @@ app.add_exception_handler(Exception, custom_exception_handler)
 async def startup_event():
     logging.info("Starting up the Tupange HealthCare Appointment Scheduling API...")
     
-    # Initialize database engine first
-    await init_db_engine()
+    # Initialize database engine and session maker
+    engine = await init_db_engine()
     
-    # Check database connection
+    # Verify connection
     if not await check_db_connection():
         raise RuntimeError("Failed to connect to database on startup")
     
-    # Initialize database with tables and superuser
+    # Initialize database schema and superuser
     try:
         from app.init_db import init_db
         await init_db()

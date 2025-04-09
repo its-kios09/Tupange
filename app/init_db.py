@@ -66,29 +66,51 @@ async def create_superuser():
             raise
 
 async def init_db():
+    # Ensure engine and session maker are initialized
     engine = get_engine()
+    async_session = get_async_session_maker()
+    
     sql_file = Path(__file__).parent.parent / "db" / "initial_setup_database.sql"
     
     if sql_file.exists():
         if not await is_database_initialized(engine):
             logger.info("First-time database initialization starting")
             try:
-                # First create tables using SQLAlchemy metadata
+                # Create tables using SQLAlchemy metadata
                 async with engine.begin() as conn:
                     await conn.run_sync(Base.metadata.create_all)
                 
-                # Then execute the SQL file for additional setup
+                # Execute the SQL file for additional setup
                 await execute_sql_file(engine, sql_file)
                 logger.info("Database initialized successfully")
             except Exception as e:
                 logger.error(f"Database initialization failed: {e}")
                 raise
-    else:
-        logger.warning("No SQL initialization file found, using SQLAlchemy metadata")
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
     
-    await create_superuser()
+    # Create superuser using proper session
+    async with async_session() as session:
+        try:
+            from app.models.user import User
+            from app.services.auth import get_password_hash
+            
+            existing_user = await User.get_by_email(session, settings.FIRST_SUPERUSER)
+            if not existing_user:
+                hashed_password = get_password_hash(settings.FIRST_SUPERUSER_PASSWORD)
+                superuser = User(
+                    email=settings.FIRST_SUPERUSER,
+                    hashed_password=hashed_password,
+                    is_active=True,
+                    is_superuser=True
+                )
+                session.add(superuser)
+                await session.commit()
+                logger.info(f"Superuser {settings.FIRST_SUPERUSER} created")
+            else:
+                logger.info("Superuser already exists")
+        except Exception as e:
+            await session.rollback()
+            logger.error(f"Error creating superuser: {e}")
+            raise
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
