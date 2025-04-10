@@ -1,4 +1,7 @@
-
+-- Drop existing database if needed (uncomment when needed)
+-- DROP DATABASE IF EXISTS healthcare_db;
+-- CREATE DATABASE healthcare_db;
+-- USE healthcare_db;
 
 CREATE TABLE IF NOT EXISTS db_initialization (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -6,26 +9,26 @@ CREATE TABLE IF NOT EXISTS db_initialization (
     initialized_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
-
--- Users table
+-- Updated Users table with role column
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     hashed_password VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     is_superuser BOOLEAN DEFAULT FALSE,
+    role ENUM('patient', 'doctor', 'admin') DEFAULT 'patient',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Patients table
+-- Patients table remains the same
 CREATE TABLE IF NOT EXISTS patients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     date_of_birth DATE NOT NULL,
-    gender VARCHAR(10) NOT NULL,
+    gender ENUM('male', 'female', 'other') NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     address VARCHAR(255),
     insurance_provider VARCHAR(100),
@@ -35,7 +38,7 @@ CREATE TABLE IF NOT EXISTS patients (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Doctors table
+-- Doctors table remains the same
 CREATE TABLE IF NOT EXISTS doctors (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -49,7 +52,7 @@ CREATE TABLE IF NOT EXISTS doctors (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Doctor availability
+-- Doctor availability remains the same
 CREATE TABLE IF NOT EXISTS doctor_availability (
     id INT AUTO_INCREMENT PRIMARY KEY,
     doctor_id INT NOT NULL,
@@ -62,7 +65,7 @@ CREATE TABLE IF NOT EXISTS doctor_availability (
     FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Appointments table
+-- Appointments table remains the same
 CREATE TABLE IF NOT EXISTS appointments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     patient_id INT NOT NULL,
@@ -78,7 +81,7 @@ CREATE TABLE IF NOT EXISTS appointments (
     FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Medical records table
+-- Medical records table remains the same
 CREATE TABLE IF NOT EXISTS medical_records (
     id INT AUTO_INCREMENT PRIMARY KEY,
     patient_id INT NOT NULL,
@@ -99,4 +102,4 @@ CREATE INDEX idx_appointments_patient ON appointments(patient_id);
 CREATE INDEX idx_appointments_time ON appointments(scheduled_time, end_time);
 CREATE INDEX idx_doctor_availability ON doctor_availability(doctor_id, day_of_week);
 
-INSERT INTO db_initialization (version) VALUES ('1.0.0');
+INSERT INTO db_initialization (version) VALUES ('2.0.0');

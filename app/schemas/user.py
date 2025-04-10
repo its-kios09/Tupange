@@ -24,7 +24,7 @@ class UserInDB(UserBase):
     id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode=True for Pydantic V2
         
 class Token(BaseModel):
     access_token: str
@@ -32,4 +32,11 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[EmailStr] = None
-    
+
+# Add these new schemas for password reset
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordReset(BaseModel):
+    token: str
+    new_password: str

@@ -64,10 +64,98 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-async def get_current_active_superuser(current_user: User = Depends(get_current_user)) -> User:
+async def get_current_active_patient(current_user: User = Depends(get_current_active_user)) -> User:
+    if current_user.role != "patient":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user doesn't have patient privileges"
+        )
+    return current_user
+async def get_current_active_doctor(current_user: User = Depends(get_current_active_user)) -> User:
+    if current_user.role != "doctor":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user doesn't have doctor privileges"
+        )
+    return current_user
+async def get_current_active_admin(current_user: User = Depends(get_current_active_user)) -> User:
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="The user doesn't have enough privileges"
+            detail="The user doesn't have admin privileges"
         )
     return current_user
+
+async def send_password_reset_email(db: AsyncSession, email: str):
+    """Generate a password reset token and send email (simulated)"""
+    user = await User.get_by_email(db, email)
+    if not user:
+        # Don't reveal whether email exists for security
+        return
+    
+    reset_token = create_password_reset_token(email)
+    
+    # Store token in Redis with 1 hour expiration
+    await redis_client.setex(
+        f"password_reset:{reset_token}",
+        timedelta(hours=1),
+        email
+    )
+    
+    # In production, you would send an email here with the reset link
+    print(f"Password reset link: http://yourapp.com/reset-password?token={reset_token}")  # For debugging
+    return {"message": "Password reset email sent if account exists"}
+
+async def reset_password(db: AsyncSession, token: str, new_password: str):
+    """Verify reset token and update password"""
+    email = await verify_password_reset_token(token)
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )
+    
+    user = await User.get_by_email(db, email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    user.hashed_password = get_password_hash(new_password)
+    await db.commit()
+    
+    # Delete the used token
+    await redis_client.delete(f"password_reset:{token}")
+    
+    return {"message": "Password updated successfully"}
+
+def create_password_reset_token(email: str) -> str:
+    """Create a JWT token for password reset"""
+    expires = timedelta(minutes=60)
+    to_encode = {"sub": email, "type": "reset"}
+    return jwt.encode(
+        to_encode,
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM
+    )
+
+async def verify_password_reset_token(token: str) -> Optional[str]:
+    """Verify password reset token and return email if valid"""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        if payload.get("type") != "reset":
+            return None
+        
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+        
+        # Check if token exists in Redis
+        stored_email = await redis_client.get(f"password_reset:{token}")
+        if stored_email != email:
+            return None
+            
+        return email
+    except JWTError:
+        return None
