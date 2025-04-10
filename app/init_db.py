@@ -1,11 +1,11 @@
-# init_db.py
 import asyncio
 from pathlib import Path
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_engine, get_async_session_maker, Base
 import logging
+from app.models.user import User
+from app.services.auth import get_password_hash
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ async def execute_sql_file(engine, file_path: Path):
                         await conn.execute(text(statement))
                     except Exception as e:
                         logger.warning(f"Statement failed (might be harmless): {e}")
-            logger.info("SQL file executed successfully")
+            logger.info("✅ SQL file executed successfully")
     except Exception as e:
         logger.error(f"Error executing SQL file: {e}")
         raise
@@ -43,9 +43,6 @@ async def create_superuser():
     async_session = get_async_session_maker()
     async with async_session() as db:
         try:
-            from app.models.user import User
-            from app.services.auth import get_password_hash
-            
             existing_user = await User.get_by_email(db, settings.FIRST_SUPERUSER)
             if not existing_user:
                 hashed_password = get_password_hash(settings.FIRST_SUPERUSER_PASSWORD)
@@ -53,20 +50,20 @@ async def create_superuser():
                     email=settings.FIRST_SUPERUSER,
                     hashed_password=hashed_password,
                     is_active=True,
-                    is_superuser=True
+                    is_superuser=True,
+                    role="admin"
                 )
                 db.add(superuser)
                 await db.commit()
-                logger.info(f"Superuser {settings.FIRST_SUPERUSER} created")
+                logger.info(f"✅ Superuser {settings.FIRST_SUPERUSER} created")
             else:
-                logger.info("Superuser already exists")
+                logger.info("✅ Superuser already exists")
         except Exception as e:
             logger.error(f"Error creating superuser: {e}")
             await db.rollback()
             raise
 
 async def init_db():
-    # Ensure engine and session maker are initialized
     engine = get_engine()
     async_session = get_async_session_maker()
     
@@ -82,35 +79,13 @@ async def init_db():
                 
                 # Execute the SQL file for additional setup
                 await execute_sql_file(engine, sql_file)
-                logger.info("Database initialized successfully")
+                logger.info("✅ Database initialized successfully")
             except Exception as e:
-                logger.error(f"Database initialization failed: {e}")
+                logger.error(f"8Database initialization failed: {e}")
                 raise
     
     # Create superuser using proper session
-    async with async_session() as session:
-        try:
-            from app.models.user import User
-            from app.services.auth import get_password_hash
-            
-            existing_user = await User.get_by_email(session, settings.FIRST_SUPERUSER)
-            if not existing_user:
-                hashed_password = get_password_hash(settings.FIRST_SUPERUSER_PASSWORD)
-                superuser = User(
-                    email=settings.FIRST_SUPERUSER,
-                    hashed_password=hashed_password,
-                    is_active=True,
-                    is_superuser=True
-                )
-                session.add(superuser)
-                await session.commit()
-                logger.info(f"Superuser {settings.FIRST_SUPERUSER} created")
-            else:
-                logger.info("Superuser already exists")
-        except Exception as e:
-            await session.rollback()
-            logger.error(f"Error creating superuser: {e}")
-            raise
+    await create_superuser()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

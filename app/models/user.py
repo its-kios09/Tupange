@@ -1,4 +1,3 @@
-# models/user.py
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -15,6 +14,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
+    role = Column(String(20), default="patient")  # Add this line
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
     
