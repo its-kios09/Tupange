@@ -92,6 +92,7 @@ class PatientService:
             operation="update_patient",
             key=f"patient:{patient_id}",
             value=str(update_data)
+        )
         
         return patient
 
