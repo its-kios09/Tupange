@@ -1,0 +1,40 @@
+{
+  "name": "app-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@carbon/colors": "^11.31.0",
+    "@carbon/ibm-products": "^2.63.0",
+    "@carbon/layout": "^11.32.0",
+    "@carbon/react": "^1.80.0",
+    "@carbon/styles": "^1.79.0",
+    "@carbon/themes": "^11.50.0",
+    "@carbon/type": "^11.38.0",
+    "@hookform/resolvers": "^5.0.1",
+    "axios": "^1.8.4",
+    "carbon-components": "^10.58.15",
+    "carbon-icons": "^7.0.7",
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.55.0",
+    "react-i18next": "^15.4.1",
+    "sass": "^1.86.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.0",
+    "typescript": "^5"
+  }
+}
