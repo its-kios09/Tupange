@@ -1,0 +1,128 @@
+@use '@carbon/layout';
+@use '@carbon/type';
+
+.bodyShort01 {
+  @include type.type-style('body-compact-01');
+}
+
+.productiveHeading03 {
+  @include type.type-style('heading-03');
+}
+
+.label01 {
+  @include type.type-style('label-01');
+}
+
+.caption01 {
+  @include type.type-style('legal-01');
+}
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.center {
+  text-align: center;
+}
+
+.logo {
+  margin-bottom: layout.$spacing-08;
+  height: layout.$spacing-11;
+  width: 16rem;
+}
+
+.logoImg {
+  margin-bottom: layout.$spacing-04;
+  max-width: 100%;
+}
+
+.link {
+  text-decoration-line: none;
+  margin-left: layout.$spacing-03;
+}
+
+.loginCard {
+  border-radius: 0;
+  background-color: white;
+  width: 23rem;
+  padding: layout.$spacing-08;
+  border-radius: layout.$spacing-03;
+  position: relative;
+  min-height: fit-content;
+}
+
+@media only screen and (min-width: 481px) {
+  .container {
+    height: 100vh;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .container {
+    height: 100vh;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .container {
+    height: 100vh;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 18rem;
+  gap: layout.$spacing-05;
+
+  :global(.cds--text-input) {
+    height: layout.$spacing-09;
+    @extend .label01;
+  }
+
+  :global(.cds--text-input__field-outer-wrapper) {
+    width: 18rem;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: layout.$spacing-05;
+  }
+}
+
+.continueButton {
+  margin-top: layout.$spacing-06;
+  width: 18rem;
+}
+
+.snackbarContainer {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 100%;
+  max-width: 400px;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.snackbar {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

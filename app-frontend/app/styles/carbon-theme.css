@@ -1,0 +1,57 @@
+
+:root {
+  /* Primary theme colors */
+  --cds-interactive-01: #9bc7b0; /* Primary button bg, focus outlines, toggles, etc. */
+  --cds-interactive-02: #e0f1ea; /* Secondary button, dropdowns, inputs bg, etc. */
+  --cds-interactive-03: #9bc7b0; /* Tertiary elements or selected row backgrounds */
+  --cds-interactive-04: #9bc7b0; /* Border for active/selected items */
+
+  --cds-ui-background: #ffffff; /* Overall page background */
+  --cds-ui-01: #ffffff; /* Container background */
+  --cds-ui-02: #f4f4f4; /* Alternate background (cards, etc.) */
+  --cds-ui-03: #e0e0e0; /* Borders and separators */
+
+  --cds-text-01: #161616; /* Primary text */
+  --cds-text-02: #525252; /* Secondary text */
+  --cds-text-03: #a8a8a8; /* Disabled text */
+
+  /* Button specific overrides */
+  --cds-button-primary: #9bc7b0;
+  --cds-button-primary-hover: #79cba7;
+  --cds-button-primary-active: #79cba7; /* <-- active/clicked background */
+  --cds-button-primary-text: #ffffff;
+  --cds-button-primary-border: #9bc7b0;
+  --cds-button-primary-border-hover: #88bca2;
+  --cds-button-primary-border-active: #7fb398;
+
+  --cds-focus: #9bc7b0;
+  --cds-button-focus-color: #9bc7b0;
+}
+.cds--btn--primary:focus {
+  box-shadow: inset 0 0 0 1px var(--cds-button-focus-color, var(--cds-focus));
+  border-color: var(--cds-button-focus-color, var(--cds-focus));
+}
+
+.cds--loading__stroke {
+  stroke: var(--cds-interactive, #79cba7);
+}
+.cds--link {
+  color: var(--cds-interactive, #79cba7);
+}
+.cds--link:visited {
+    color: var(--cds-link-text-color, var(--cds-interactive, #9bc7b0));
+}
+.cds--link:visited:hover {
+    color: var(--cds-link-hover-text-color, var(--cds-interactive, #9bc7b0));
+}
+.cds--link:focus {
+    outline: 1px solid var(--cds-focus, #9bc7b0);
+    outline-color: var(--cds-link-focus-text-color, var(--cds-focus, #7fb398));
+    text-decoration: underline;
+}
+.cds--link:active, .cds--link:active:visited, .cds--link:active:visited:hover {
+    outline: 1px solid var(--cds-focus, #9bc7b0);
+    color: var(--cds-link-text-color, var(--cds-link-primary, #9bc7b0));
+    outline-color: var(--cds-link-focus-text-color, var(--cds-focus, #9bc7b0));
+    text-decoration: underline;
+}

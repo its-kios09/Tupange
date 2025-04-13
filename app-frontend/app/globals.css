@@ -1,0 +1,64 @@
+@import '@carbon/styles/css/styles.css';
+@import './styles/carbon-theme.css';
+
+:root {
+  --background: #ffffff;
+  --foreground: #9bc7b0;
+  --font-josefin: 'Josefin Sans', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #9bc7b0;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-josefin);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+.header {
+  /* background-color: #ffffff; */
+  /* padding: 1rem; */
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+
+.headerContainer {
+  max-width: 1200px;
+  /* margin: 0 auto; */
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: auto;
+  object-fit: contain;
+}
