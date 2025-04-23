@@ -81,3 +81,9 @@ Interactive API documentation is available via Swagger UI at `/docs` when the ap
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Create a new Pull Request
+
+
+## The UI is still under development: Demo
+![demoTupange](https://github.com/user-attachments/assets/f00eb8ca-4b68-47f6-8ea8-62197cad1d1a)
+
+
