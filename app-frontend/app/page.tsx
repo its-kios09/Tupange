@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import LoginPage from "./login/page";
 import { useAuth } from "./context/auth-context";
 import { useEffect } from "react";
-import { Loading } from "@carbon/react";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -18,15 +17,6 @@ export default function Home() {
       router.push("/user");
     }
   }, [user, router]);
-
-  if (isLoading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
-
   return (
     <>
       <div className={styles.container}>

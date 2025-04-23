@@ -8,12 +8,14 @@ import {
   TextInput,
   Tile,
   InlineLoading,
+  ActionableNotification,
 } from "@carbon/react";
 import styles from "./page.module.scss";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RegisterFormData, registerSchema } from "../schemas/auth";
 import { useAuth } from "../context/auth-context";
+import classNames from "classnames";
 
 const RegisterPage = () => {
   const { user, register: registerUser, isLoading } = useAuth();
@@ -22,10 +24,15 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
     watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+  });
+
+  const [notification, setNotification] = useState({
+    isOpen: false,
+    message: "",
+    kind: "error" as "error" | "success" | "info" | "warning",
   });
 
   useEffect(() => {
@@ -34,19 +41,57 @@ const RegisterPage = () => {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    if (notification.isOpen) {
+      const timer = setTimeout(() => {
+        setNotification((prev) => ({ ...prev, isOpen: false }));
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification.isOpen]);
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await registerUser(data?.email, data?.password);
+      const success = await registerUser(data.email, data.password);
+      if (success) {
+        setNotification({
+          isOpen: true,
+          message: "Registration successful! Redirecting...",
+          kind: "success",
+        });
+        // Redirect after showing success message
+        setTimeout(() => router.push("/"), 4000);
+      }
     } catch (error: any) {
-      setError("root", {
-        type: "manual",
-        message: error.message || "Registration failed",
+      setNotification({
+        isOpen: true,
+        message: error.message || "Registration failed. Please try again.",
+        kind: "error",
       });
     }
   };
 
   return (
     <div className={styles.container}>
+      {notification.isOpen && (
+        <div className={styles.notificationContainer}>
+          <ActionableNotification
+            aria-label="Registration status"
+            title={notification.message}
+            kind={notification.kind}
+            inline
+            lowContrast={notification.kind === "error"}
+            onClose={() =>
+              setNotification((prev) => ({ ...prev, isOpen: false }))
+            }
+            className={classNames(styles.notification, {
+              [styles.notificationError]: notification.kind === "error",
+              [styles.notificationSuccess]: notification.kind === "success",
+            })}
+          />
+        </div>
+      )}
+
       <Tile className={styles.loginCard}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.inputGroup}>
@@ -57,6 +102,7 @@ const RegisterPage = () => {
               invalid={!!errors.email}
               invalidText={errors.email?.message}
               {...register("email")}
+              disabled={isLoading}
             />
 
             <PasswordInput
@@ -65,6 +111,7 @@ const RegisterPage = () => {
               invalid={!!errors.password}
               invalidText={errors.password?.message}
               {...register("password")}
+              disabled={isLoading}
             />
 
             <PasswordInput
@@ -73,19 +120,19 @@ const RegisterPage = () => {
               invalid={!!errors.confirmPassword}
               invalidText={errors.confirmPassword?.message}
               {...register("confirmPassword")}
+              disabled={isLoading}
             />
-
-            {errors.root && (
-              <div className={styles.errorMessage}>{errors.root.message}</div>
-            )}
 
             <Button
               type="submit"
               disabled={isLoading}
               className={styles.continueButton}
             >
-              Register
-              {isLoading && <InlineLoading description="Registering..." />}
+              {isLoading ? (
+                <InlineLoading description="Registering..." />
+              ) : (
+                "Register"
+              )}
             </Button>
           </div>
           <Link href="/">Already have an account? Login</Link>
