@@ -1,8 +1,9 @@
 @import '@carbon/styles/css/styles.css';
 @import './styles/carbon-theme.css';
 
+
 :root {
-  --background: #ffffff;
+  --background: #9bc7b0;
   --foreground: #9bc7b0;
   --font-josefin: 'Josefin Sans', sans-serif;
 }

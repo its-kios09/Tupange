@@ -1,10 +1,113 @@
-.dashboardLayout {
-  display: flex;
-  height: 100vh;
+.container {
+  width: 100%;
+  margin-left: 0;
+  transition: margin-left 0.11s cubic-bezier(0.2, 0, 1, 0.9);
+  margin-top: 2rem;
+  background: white;
+
+  @media (min-width: 66rem) {
+    margin-left: 16.09rem;
+    margin-top: 3.09rem;
+    width: calc(100% - 16rem);
+  }
 }
 
-.dashboardContent {
-  flex-grow: 1;
-  padding: 1rem;
-  overflow-y: auto;
+.headerContainer {
+  position: relative;
+  z-index: 100;
+}
+
+:global(.cds--header-panel) {
+  position: fixed;
+  top: 3rem;
+  right: 0;
+  z-index: 10000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.notificationInline {
+  text-align: justify;
+}
+
+:global(.cds--side-nav__navigation) {
+  @media (min-width: 66rem) {
+    position: fixed;
+    height: calc(100% - 3rem);
+    z-index: 6000;
+  }
+}
+.navUserAvatar {
+  block-size: 2rem;
+  inline-size: 2rem;
+  font-size: var(--cds-heading-03-font-size, 1.25rem);
+  font-weight: var(--cds-heading-03-font-weight, 400);
+  line-height: var(--cds-heading-03-line-height, 1.4);
+  letter-spacing: var(--cds-heading-03-letter-spacing, 0);
+  background: transparent;
+}
+.patientAvatar {
+  margin-top: 0.5rem;
+}
+
+.patientInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #8d8d8d33;
+}
+.patientDetails {
+  flex: 1;
+}
+.demographics {
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.identifiers {
+  display: flex;
+  flex-direction: column;
+}
+
+.middot {
+  margin: 0 0.25rem;
+}
+.snackbarContainer {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 100%;
+  max-width: 400px;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.snackbar {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.buttonContainer {
+  margin-top: 43.7rem;
+  padding: 0.1rem;
+  bottom: 0;
+}
+
+.buttonContainer.disabledState {
+  margin-top: 44.7rem;
+}
+.buttonContainer.enabledState {
+  margin-top: 45.7rem;
+}
+@media (max-width: 66rem) {
+  .buttonContainer {
+    margin-top: 42.5rem;
+    padding: 0.1rem;
+  }
+  
+  .buttonContainer.disabledState {
+    margin-top: 44.7rem;
+  }
 }

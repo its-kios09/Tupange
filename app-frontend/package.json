@@ -11,6 +11,7 @@
   "dependencies": {
     "@carbon/colors": "^11.31.0",
     "@carbon/ibm-products": "^2.63.0",
+    "@carbon/ibm-products-styles": "^2.59.0",
     "@carbon/layout": "^11.32.0",
     "@carbon/react": "^1.80.0",
     "@carbon/styles": "^1.79.0",
@@ -20,6 +21,7 @@
     "axios": "^1.8.4",
     "carbon-components": "^10.58.15",
     "carbon-icons": "^7.0.7",
+    "lodash": "^4.17.21",
     "next": "^15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/lodash": "^4.17.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
